@@ -2,6 +2,11 @@
 
 A Phaser 3 implementation of the game <a href="https://bicyclecards.com/how-to-play/solitaire" target="_blank">Solitaire</a>.
 
+To learn how this project was built, you can follow along in a tutorial video series on YouTube here:
+
+[<img src="https://i.ytimg.com/vi/sF9mElVi5lQ/hqdefault.jpg">](https://youtu.be/gf_3KNMRp9k "Phaser 3 Game Tutorial - Solitaire")
+
+
 ## Demo
 
 You can find a playable version of the game here: <a href="https://devshareacademy.github.io/phaser-3-solitaire-tutorial/" target="_blank">Phaser 3 - Solitaire</a>.
