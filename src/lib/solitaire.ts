@@ -4,6 +4,8 @@ import { Deck } from './deck';
 import { FoundationPile } from './foundation-pile';
 import { exhaustiveGuard } from './utils';
 
+const CHEAT = true;//false;
+
 export class Solitaire {
   #deck: Deck;
   #foundationPileSpade: FoundationPile;
@@ -130,7 +132,7 @@ export class Solitaire {
     if (card === undefined) {
       return false;
     }
-
+    //TODO: trace what could be messing up the tableau piles 
     const targetTableauPile = this.#tableauPiles[targetTableauIndex];
     if (targetTableauPile === undefined) {
       return false;
@@ -189,6 +191,7 @@ export class Solitaire {
       return false;
     }
 
+    //TODO: why are we checking this in a couple places?
     // based on the suit color and card number, check that this card is allowed as the next card in the target tableau
     if (!this.#isValidMoveToAddCardToTableau(card, targetTableauPile)) {
       return false;
@@ -267,9 +270,12 @@ export class Solitaire {
   }
 
   #isValidMoveToAddCardToTableau(card: Card, tableauPile: Card[]): boolean {
-    // if tableau is empty, only allow king (13) to be placed
+    // if tableau is empty, and cheat is inactive, only allow king (13) to be placed
     if (tableauPile.length === 0) {
-      return card.value === 13;
+      if (card.value === 13) {
+        return true;
+      }
+      return CHEAT;
     }
 
     // get reference to the last card in the tableau pile

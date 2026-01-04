@@ -7,7 +7,7 @@ import { FoundationPile } from '../lib/foundation-pile';
 // used for drawing out game objects for debugging our player input
 const DEBUG = true;//false;
 // the scale factor that will be applied to our card image game objects
-const SCALE = 1.5;
+const SCALE = 1.5; //started with 1.5
 // the frame of the card spritesheet that represents the back of a card
 const CARD_BACK_FRAME = 52;
 // the x & y positions of were the foundation piles will be placed in our game area
@@ -86,6 +86,10 @@ export class GameScene extends Phaser.Scene {
       .setOrigin(0)
       .setInteractive();
 
+    if (DEBUG) {
+      this.add.rectangle(drawZone.x, drawZone.y, drawZone.width, drawZone.height, 0xff00ff, 0.5).setOrigin(0);
+    }
+
     drawZone.on(Phaser.Input.Events.POINTER_DOWN, () => {
       // if no cards in either pile, we don't need to do anything in the ui
       if (this.#solitaire.drawPile.length === 0 && this.#solitaire.discardPile.length === 0) {
@@ -113,10 +117,6 @@ export class GameScene extends Phaser.Scene {
       const card = this.#solitaire.discardPile[this.#solitaire.discardPile.length - 1];
       this.#discardPileCards[1].setFrame(this.#getCardFrame(card)).setVisible(true);
     });
-
-    if (DEBUG) {
-      this.add.rectangle(drawZone.x, drawZone.y, drawZone.width, drawZone.height, 0xff0000, 0.5).setOrigin(0);
-    }
   }
 
   #createDiscardPile(): void {
@@ -300,7 +300,7 @@ export class GameScene extends Phaser.Scene {
       zoneType: ZONE_TYPE.FOUNDATION,
     });
     if (DEBUG) {
-      this.add.rectangle(350, 0, zone.width, zone.height, 0xff0000, 0.2).setOrigin(0);
+      this.add.rectangle(350, 0, zone.width, zone.height, 0xffff00, 0.2).setOrigin(0);
     }
 
     // drop zone for each tableau pile in the game (the 7 main piles)
@@ -315,7 +315,7 @@ export class GameScene extends Phaser.Scene {
         })
         .setDepth(-1);
       if (DEBUG) {
-        this.add.rectangle(30 + i * 85, 92, zone.width, zone.height, 0xff0000, 0.5).setOrigin(0);
+        this.add.rectangle(30 + i * 85, 92, zone.width, zone.height, 0x00ff00, 0.2).setOrigin(0);
       }
     }
   }
