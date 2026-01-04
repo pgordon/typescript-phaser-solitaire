@@ -5,7 +5,7 @@ import { Card } from '../lib/card';
 import { FoundationPile } from '../lib/foundation-pile';
 
 // used for drawing out game objects for debugging our player input
-const DEBUG = false;
+const DEBUG = true;//false;
 // the scale factor that will be applied to our card image game objects
 const SCALE = 1.5;
 // the frame of the card spritesheet that represents the back of a card
