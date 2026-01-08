@@ -9,7 +9,7 @@ node_modules folder needed to be copied from the development zip file for the tu
 
 Game Plans...
 
-Better card art
+Better card art: clearer distinction between the red suits and the black suits
 
 Restart button
 
@@ -32,3 +32,5 @@ Double click to auto-send cards to the foundation pile slots (where the suits go
 Fix some layering issues with being able to drag a card below other cards
 
 Spider Solitaire game with one or two suits (four is too hard - to play- :P)
+
+Scorpion Solitaire has one deck. Let's do this one first.
