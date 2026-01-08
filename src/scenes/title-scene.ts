@@ -21,14 +21,14 @@ export class TitleScene extends Phaser.Scene {
       repeat: -1,
       yoyo: true,
     });
-
     this.input.once(Phaser.Input.Events.POINTER_DOWN, () => {
       this.cameras.main.fadeOut(1000, 0, 0, 0, (camera, progress: number) => {
         if (progress !== 1) {
           return;
         }
-        this.scene.start(SCENE_KEYS.GAME);
+        this.scene.start(SCENE_KEYS.GAME_SCORPION);
       });
     });
+
   }
 }

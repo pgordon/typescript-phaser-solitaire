@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { PreloadScene } from './scenes/preload-scene';
 import { TitleScene } from './scenes/title-scene';
 import { GameScene } from './scenes/game-scene';
+import { ScorpionGameScene } from './scenes/scorpion-game-scene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.WEBGL,
@@ -14,7 +15,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     mode: Phaser.Scale.FIT,
   },
   backgroundColor: '#387F3C',
-  scene: [PreloadScene, TitleScene, GameScene],
+  scene: [PreloadScene, TitleScene, GameScene, ScorpionGameScene],
 };
 
 window.onload = () => {

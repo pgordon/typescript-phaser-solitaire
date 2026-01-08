@@ -2,11 +2,13 @@ export const SCENE_KEYS = {
   PRELOAD: 'PRELOAD',
   TITLE: 'TITLE',
   GAME: 'GAME',
+  GAME_SCORPION: 'GAME_SCORPION',
 } as const;
 
 export const ASSET_KEYS = {
   TITLE: 'TITLE',
   CLICK_TO_START: 'CLICK_TO_START',
+  CLICK_TO_START_SCORP: 'CLICK_TO_START_SCORP',
   CARDS: 'CARDS',
 } as const;
 
