@@ -4,7 +4,7 @@ import { Deck } from './deck';
 import { FoundationPile } from './foundation-pile';
 import { exhaustiveGuard } from './utils';
 
-const CHEAT = true;//false;
+const CHEAT = false;
 
 export class ScorpionSolitaire {
   #deck: Deck;

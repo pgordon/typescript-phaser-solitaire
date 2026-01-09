@@ -7,7 +7,7 @@ import { FoundationPile } from '../lib/foundation-pile'; //<- todo: maybe differ
 // used for drawing out game objects for debugging our player input
 const DEBUG = true;//false;
 // the scale factor that will be applied to our card image game objects
-const SCALE = 1.5; //started with 1.5
+const SCALE = 0.7; //started with 1.5
 // the frame of the card spritesheet that represents the back of a card
 const CARD_BACK_FRAME = 52;
 // the starting frame of the card suit in the card spritesheet that represents the various cards
@@ -102,13 +102,15 @@ export class ScorpionGameScene extends Phaser.Scene {
       this.#solitaire.drawCard();
       // update the shown cards in the draw pile to be based on number of cards in pile
       this.#showCardsInDrawPile();
-      // update the bottom card in the discard pile to reflect the top card TODO: remove the cards and display them in correct places
+      //this.#updateTableausWithDrawSlashDiscardCards();
+      /* update the bottom card in the discard pile to reflect the top card TODO: remove the cards and display them in correct places
       this.#discardPileCards[0].setFrame(this.#discardPileCards[1].frame).setVisible(this.#discardPileCards[1].visible);
       // update the top card in the discard pile to reflect card we drew
       const card = this.#solitaire.discardPile[this.#solitaire.discardPile.length - 1];
       this.#discardPileCards[1].setFrame(this.#getCardFrame(card)).setVisible(true);
-
-      //TODO: remove all the cards from the discard pile: now it is empty - perhaps should have an 'are you sure' before usine these
+      */
+      
+      //TODO: remove all the cards from the discard pile: now it is empty - perhaps should have an 'are you sure' before using these, or require two clicks for debugging
 
     });
   }
@@ -354,6 +356,9 @@ export class ScorpionGameScene extends Phaser.Scene {
     // update discard pile cards, or flip over tableau cards if needed
     if (isCardFromDiscardPile) {
       this.#updateCardGameObjectsInDiscardPile();
+      for(let i=0; i < 3; i++) {
+        this.#updateTableausWithDrawSlashDiscardCards(i);
+      }
     } else {
       this.#handleRevealingNewTableauCards(tableauPileIndex as number);
     }
@@ -434,6 +439,31 @@ export class ScorpionGameScene extends Phaser.Scene {
     // get the cards tableau pile and check to see if the new card at the bottom of the stack should be flipped over
     this.#handleRevealingNewTableauCards(tableauPileIndex as number);
   }
+
+/**
+ * Show the three draw cards on each tableau pile
+ * 
+ */
+ #updateTableausWithDrawSlashDiscardCards(gameObject: Phaser.GameObjects.Image, targetTableauPileIndex: number): void {
+  
+    // store reference to the original size of the tableau pile so we know were to place game object
+    const originalTargetPileSize = this.#tableauContainers[targetTableauPileIndex].length;
+
+    // add single discard pile card to tableau as a new game object  
+    const card = this.#createCard(
+      0,
+      originalTargetPileSize * 20,
+      true,
+      originalTargetPileSize,
+      targetTableauPileIndex,
+    );
+    card.setFrame(gameObject.frame);
+    this.#tableauContainers[targetTableauPileIndex].add(card);
+    //TODO: No more 'discard' or draw pile
+    return;
+    
+ }
+
 
   /**
    * Updates the top and bottom cards in the discard pile to reflect the state from the Solitaire
