@@ -7,9 +7,9 @@ import { FoundationPile } from '../lib/foundation-pile'; //<- todo: maybe differ
 // used for drawing out game objects for debugging our player input
 const DEBUG = true;//false;
 // the scale factor that will be applied to our card image game objects
-const SCALE = 0.7; //started with 1.5
+const SCALE = 1.0; //started with 1.5
 // the frame of the card spritesheet that represents the back of a card
-const CARD_BACK_FRAME = 52;
+const CARD_BACK_FRAME = 54; //blue = 52, red, green, brown, grey
 // the starting frame of the card suit in the card spritesheet that represents the various cards
 const SUIT_FRAMES = {
   HEART: 26,
@@ -19,17 +19,17 @@ const SUIT_FRAMES = {
 };
 
 // the x & y positions of were the foundation piles will be placed in our game area TODO: won't need this
-const FOUNDATION_PILE_X_POSITIONS = [360, 425, 490, 555];
+const FOUNDATION_PILE_X_POSITIONS = [360, 425, 490, 555];// with scale 1.5: [360, 425, 490, 555];
 const FOUNDATION_PILE_Y_POSITION = 5;
 // the x & y position of were the discard pile will be placed in our game area TODO: won't need this
-const DISCARD_PILE_X_POSITION = 85;
-const DISCARD_PILE_Y_POSITION = 5;
+const DISCARD_PILE_X_POSITION = 42.5; //with 1.5 scale = 85;
+const DISCARD_PILE_Y_POSITION = 2.5; //with 1.5 scale = 5;
 // the x & y position of were the draw pile will be placed in our game area
-const DRAW_PILE_X_POSITION = 5;
-const DRAW_PILE_Y_POSITION = 5;
+const DRAW_PILE_X_POSITION = 2.5; //were 5
+const DRAW_PILE_Y_POSITION = 2.5;
 // the x & y position of were the tableau pile will be placed in our game area
-const TABLEAU_PILE_X_POSITION = 40;
-const TABLEAU_PILE_Y_POSITION = 92;
+const TABLEAU_PILE_X_POSITION = 20; //40;
+const TABLEAU_PILE_Y_POSITION = 46; // 92;
 
 type ZoneType = keyof typeof ZONE_TYPE;
 // the different type of drop zones, or areas players can drop cards in the game TODO: only the Tableau needed
@@ -144,7 +144,7 @@ export class ScorpionGameScene extends Phaser.Scene {
     this.#tableauContainers = [];
 
     this.#solitaire.tableauPiles.forEach((pile, pileIndex) => {
-      const x = TABLEAU_PILE_X_POSITION + pileIndex * 85;
+      const x = TABLEAU_PILE_X_POSITION + pileIndex * 42.5; //had been *85 for scale of 1.5
       const tableauContainer = this.add.container(x, TABLEAU_PILE_Y_POSITION, []);
       this.#tableauContainers.push(tableauContainer);
       pile.forEach((card, cardIndex) => {
@@ -302,17 +302,18 @@ export class ScorpionGameScene extends Phaser.Scene {
 
     // drop zone for each tableau pile in the game (the 7 main piles)
     for (let i = 0; i < 7; i += 1) {
+      //TODO: breakdown and variable-ize these magic numbers
       zone = this.add
-        .zone(30 + i * 85, 92, 75.5, 585)
+        .zone(30 + i * 85/2, 92/2, 75.5/2, 585/2)
         .setOrigin(0)
-        .setRectangleDropZone(75.5, 585)
+        .setRectangleDropZone(75.5/2, 585/2)
         .setData({
           zoneType: ZONE_TYPE.TABLEAU,
           tableauIndex: i,
         })
         .setDepth(-1);
       if (DEBUG) {
-        this.add.rectangle(30 + i * 85, 92, zone.width, zone.height, 0x006666, 0.2).setOrigin(0);
+        this.add.rectangle(30 + i * 85/2, 92/2, zone.width, zone.height, 0x006666, 0.2).setOrigin(0);
       }
     }
   }
