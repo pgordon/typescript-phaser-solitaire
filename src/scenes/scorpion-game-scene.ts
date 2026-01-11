@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser';
-import { ASSET_KEYS, CARD_HEIGHT, CARD_WIDTH, SCENE_KEYS } from './common';
+import { ASSET_KEYS, CARD_HEIGHT, CARD_WIDTH, CARD_SPACE_BETWEEN, SCENE_KEYS } from './common';
 import { ScorpionSolitaire } from '../lib/scorpion-solitaire'; //<- todo: separate rules
 import { Card } from '../lib/card';
 import { FoundationPile } from '../lib/foundation-pile'; //<- todo: maybe different version of this too, or remove it
@@ -8,6 +8,7 @@ import { FoundationPile } from '../lib/foundation-pile'; //<- todo: maybe differ
 const DEBUG = true;//false;
 // the scale factor that will be applied to our card image game objects
 const SCALE = 1.0; //started with 1.5
+const INVERSE_OVERLAP_FACTOR = 3;//3= a third of the way down, height, to overlap the cards
 // the frame of the card spritesheet that represents the back of a card
 const CARD_BACK_FRAME = 54; //blue = 52, red, green, brown, grey
 // the starting frame of the card suit in the card spritesheet that represents the various cards
@@ -79,12 +80,12 @@ export class ScorpionGameScene extends Phaser.Scene {
     // create initial draw pile game object cards
     this.#drawPileCards = [];
     for (let i = 0; i < 3; i += 1) {
-      this.#drawPileCards.push(this.#createCard(DRAW_PILE_X_POSITION + i * 5, DRAW_PILE_Y_POSITION, false));
+      this.#drawPileCards.push(this.#createCard(DRAW_PILE_X_POSITION + i * CARD_SPACE_BETWEEN, DRAW_PILE_Y_POSITION, false));
     }
 
     // create zone to listen for click events, which triggers the drawing card logic
     const drawZone = this.add
-      .zone(0, 0, CARD_WIDTH * SCALE + 20, CARD_HEIGHT * SCALE + 12)
+      .zone(0, 0, CARD_WIDTH * SCALE + CARD_SPACE_BETWEEN, CARD_HEIGHT * SCALE + CARD_SPACE_BETWEEN)
       .setOrigin(0)
       .setInteractive();
 
@@ -115,6 +116,10 @@ export class ScorpionGameScene extends Phaser.Scene {
     });
   }
 
+  #drawCardLocationBox(x: number, y: number): void {
+    this.add.rectangle(x, y, CARD_WIDTH+CARD_SPACE_BETWEEN, CARD_HEIGHT+CARD_SPACE_BETWEEN).setOrigin(0).setStrokeStyle(2, 0x000000, 0.5);
+  }
+
   #createDiscardPile(): void { //I think this whole thing should go...
     // create outline for pile
     this.#drawCardLocationBox(DISCARD_PILE_X_POSITION, DISCARD_PILE_Y_POSITION);
@@ -140,15 +145,15 @@ export class ScorpionGameScene extends Phaser.Scene {
     });
   }
 
-  #createTableauPiles(): void { //TODO: first three piles have three facedown cards; Next 4 piles have all 7 cards up
+  #createTableauPiles(): void { 
     this.#tableauContainers = [];
 
     this.#solitaire.tableauPiles.forEach((pile, pileIndex) => {
-      const x = TABLEAU_PILE_X_POSITION + pileIndex * 42.5; //had been *85 for scale of 1.5
+      const x = TABLEAU_PILE_X_POSITION + pileIndex * (CARD_WIDTH+CARD_SPACE_BETWEEN); 
       const tableauContainer = this.add.container(x, TABLEAU_PILE_Y_POSITION, []);
       this.#tableauContainers.push(tableauContainer);
       pile.forEach((card, cardIndex) => {
-        const cardGameObject = this.#createCard(0, cardIndex * 20, false, cardIndex, pileIndex);
+        const cardGameObject = this.#createCard(0, cardIndex * (CARD_HEIGHT*SCALE/INVERSE_OVERLAP_FACTOR), false, cardIndex, pileIndex);
         tableauContainer.add(cardGameObject);
         if (card.isFaceUp) {
           cardGameObject.setFrame(this.#getCardFrame(card));
@@ -156,10 +161,6 @@ export class ScorpionGameScene extends Phaser.Scene {
         }
       });
     });
-  }
-
-  #drawCardLocationBox(x: number, y: number): void {
-    this.add.rectangle(x, y, 56, 78).setOrigin(0).setStrokeStyle(2, 0x000000, 0.5);
   }
 
   #createCard(
@@ -227,7 +228,7 @@ export class ScorpionGameScene extends Phaser.Scene {
           for (let i = 1; i <= numberOfCardsToMove; i += 1) {
             this.#tableauContainers[tableauPileIndex]
               .getAt<Phaser.GameObjects.Image>(cardIndex + i)
-              .setPosition(dragX, dragY + 20 * i);
+              .setPosition(dragX, dragY + (CARD_HEIGHT*SCALE/INVERSE_OVERLAP_FACTOR) * i);
           }
         }
       },
@@ -272,7 +273,6 @@ export class ScorpionGameScene extends Phaser.Scene {
   }
 
   /**
-   * TODO: this will def need changing
    * Determines the number of cards that should also be moved with the current card game object that is being
    * dragged. Example, in a pile I have the cards 5 -> 4 -> 3, and I want to move the whole stack, when I drag the 5
    * card, cards 4 and 3 should also move. If I drag the 4 card, we should not move card 5, but card 3 should be
@@ -291,6 +291,7 @@ export class ScorpionGameScene extends Phaser.Scene {
   }
 
   #createDropZones(): void {
+    // FOUNDATION PILES
     // create drop zone for foundation piles, in the game we will have 1 drop zone and then automatically place the card in the pile it belongs
     // for each drop zone, we add custom data so when the `drag` event listener is invoked, we can run specific logic to that zone type
     let zone = this.add.zone(350, 0, 270, 85).setOrigin(0).setRectangleDropZone(270, 85).setData({
@@ -300,20 +301,21 @@ export class ScorpionGameScene extends Phaser.Scene {
       this.add.rectangle(350, 0, zone.width, zone.height, 0x00cccc, 0.2).setOrigin(0);
     }
 
+    //TABLEAU PILES
     // drop zone for each tableau pile in the game (the 7 main piles)
     for (let i = 0; i < 7; i += 1) {
       //TODO: breakdown and variable-ize these magic numbers
       zone = this.add
-        .zone(30 + i * 85/2, 92/2, 75.5/2, 585/2)
+        .zone(TABLEAU_PILE_X_POSITION + i * (CARD_WIDTH+CARD_SPACE_BETWEEN), TABLEAU_PILE_Y_POSITION, CARD_WIDTH+CARD_SPACE_BETWEEN, 585/2)
         .setOrigin(0)
-        .setRectangleDropZone(75.5/2, 585/2)
+        .setRectangleDropZone(CARD_WIDTH+CARD_SPACE_BETWEEN, 585/2)
         .setData({
           zoneType: ZONE_TYPE.TABLEAU,
           tableauIndex: i,
         })
         .setDepth(-1);
       if (DEBUG) {
-        this.add.rectangle(30 + i * 85/2, 92/2, zone.width, zone.height, 0x006666, 0.2).setOrigin(0);
+        this.add.rectangle(TABLEAU_PILE_X_POSITION + i * (CARD_WIDTH+CARD_SPACE_BETWEEN), TABLEAU_PILE_Y_POSITION, zone.width, zone.height, 0x006666, 0.2).setOrigin(0);
       }
     }
   }
@@ -403,7 +405,7 @@ export class ScorpionGameScene extends Phaser.Scene {
     if (isCardFromDiscardPile) {
       const card = this.#createCard(
         0,
-        originalTargetPileSize * 20,
+        originalTargetPileSize * CARD_HEIGHT*SCALE/INVERSE_OVERLAP_FACTOR,
         true,
         originalTargetPileSize,
         targetTableauPileIndex,
@@ -428,7 +430,7 @@ export class ScorpionGameScene extends Phaser.Scene {
       const cardIndex = originalTargetPileSize + i;
       cardGameObject.setData({
         x: 0,
-        y: cardIndex * 20,
+        y: cardIndex * (CARD_HEIGHT*SCALE/INVERSE_OVERLAP_FACTOR),
         cardIndex,
         pileIndex: targetTableauPileIndex,
       });
@@ -453,7 +455,7 @@ export class ScorpionGameScene extends Phaser.Scene {
     // add single discard pile card to tableau as a new game object  
     const card = this.#createCard(
       0,
-      originalTargetPileSize * 20,
+      originalTargetPileSize * (CARD_HEIGHT*SCALE/INVERSE_OVERLAP_FACTOR),
       true,
       originalTargetPileSize,
       targetTableauPileIndex,
@@ -489,7 +491,7 @@ export class ScorpionGameScene extends Phaser.Scene {
   #handleRevealingNewTableauCards(tableauPileIndex: number): void {
     // update tableau container depth
     this.#tableauContainers[tableauPileIndex].setDepth(0);
-    // check to see if the tableau pile card at the bottom of the sack needs to be flipped over
+    // check to see if the tableau pile card at the bottom of the stack needs to be flipped over
     const flipTableauCard = this.#solitaire.flipTopTableauCard(tableauPileIndex);
     if (flipTableauCard) {
       const tableauPile = this.#solitaire.tableauPiles[tableauPileIndex];

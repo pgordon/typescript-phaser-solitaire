@@ -14,3 +14,4 @@ export const ASSET_KEYS = {
 
 export const CARD_WIDTH = 37;
 export const CARD_HEIGHT = 52;
+export const CARD_SPACE_BETWEEN = 3;
