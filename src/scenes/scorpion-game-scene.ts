@@ -5,7 +5,7 @@ import { Card } from '../lib/card';
 import { FoundationPile } from '../lib/foundation-pile'; //<- todo: maybe different version of this too, or remove it
 
 // used for drawing out game objects for debugging our player input
-const DEBUG = true;//false;
+const DEBUG = false;
 // the scale factor that will be applied to our card image game objects
 const SCALE = 1.0; //started with 1.5
 const INVERSE_OVERLAP_FACTOR = 3;//3= a third of the way down, height, to overlap the cards
@@ -104,13 +104,12 @@ export class ScorpionGameScene extends Phaser.Scene {
       // update the shown cards in the draw pile to be based on number of cards in pile
       this.#showCardsInDrawPile();
       //this.#updateTableausWithDrawSlashDiscardCards();
-      /* update the bottom card in the discard pile to reflect the top card TODO: remove the cards and display them in correct places
+      // update the bottom card in the discard pile to reflect the top card TODO: remove the cards and display them in correct places
       this.#discardPileCards[0].setFrame(this.#discardPileCards[1].frame).setVisible(this.#discardPileCards[1].visible);
       // update the top card in the discard pile to reflect card we drew
       const card = this.#solitaire.discardPile[this.#solitaire.discardPile.length - 1];
       this.#discardPileCards[1].setFrame(this.#getCardFrame(card)).setVisible(true);
-      */
-      
+            
       //TODO: remove all the cards from the discard pile: now it is empty - perhaps should have an 'are you sure' before using these, or require two clicks for debugging
 
     });

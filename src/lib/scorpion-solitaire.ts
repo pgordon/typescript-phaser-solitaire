@@ -89,16 +89,16 @@ export class ScorpionSolitaire {
     if(this.#deck.length === 0) {
       return false;
     }
-    for(let i = 0; i < 3; i++)
-    {
-      const card = this.#deck.draw();
-      if (card === undefined) {
+    const card = this.#deck.draw();
+    if (card === undefined) {
         return false;
-      }
-      card.flip();
-      this.#deck.discardPile.push(card);
-      this.playDiscardPileCardToTableau(i);
     }
+    /*for(let i = 0; i < 3; i++)
+    {      
+      this.playDiscardPileCardToTableau(i);
+    }*/
+    card.flip();
+    this.#deck.discardPile.push(card);
     return true;
   }
 
