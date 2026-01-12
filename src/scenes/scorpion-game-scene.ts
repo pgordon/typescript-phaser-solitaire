@@ -62,6 +62,10 @@ export class ScorpionGameScene extends Phaser.Scene {
     this.#solitaire = new ScorpionSolitaire();
     this.#solitaire.newGame();
 
+    //this.#createCheatToggle();
+    this.#createNewGameButton();
+    //this.#createResetButton();
+
     // setup game objects based on solitaire game state
     this.#createDrawPile();
     this.#createDiscardPile();
@@ -71,6 +75,20 @@ export class ScorpionGameScene extends Phaser.Scene {
     // setup drop zones for interactions and events for drag
     this.#createDragEvents();
     this.#createDropZones();
+  }
+
+  #createNewGameButton(): void {
+    const buttonX = 9*CARD_WIDTH+CARD_SPACE_BETWEEN*SCALE;
+    const buttonY = 100;
+    this.add.image(buttonX, buttonY, ASSET_KEYS.NEW_GAME, 0)
+    const buttonZone = this.add
+          .zone(buttonX, buttonY, CARD_WIDTH * SCALE, CARD_HEIGHT * SCALE)
+          .setOrigin(0)
+          .setInteractive();
+
+    buttonZone.on(Phaser.Input.Events.POINTER_DOWN, () => {
+      this.scene.start(SCENE_KEYS.GAME_SCORPION);
+    });
   }
 
   #createDrawPile(): void {

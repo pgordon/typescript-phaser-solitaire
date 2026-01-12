@@ -121,6 +121,12 @@ export class ScorpionSolitaire {
       return false;
     }
 
+    //these have to go in the first three stacks, in order, one at a time
+    if(targetTableauIndex >= 3) {
+      return false;
+    }
+
+
     // play card to the tableau pile and remove from the discard pile
     this.#tableauPiles[targetTableauIndex].push(card);
     this.#deck.discardPile.pop();

@@ -14,6 +14,10 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: CARD_WIDTH,
       frameHeight: CARD_HEIGHT,
     });
+    this.load.image(ASSET_KEYS.NEW_GAME, 'assets/images/NewGame.png');
+    this.load.image(ASSET_KEYS.RESET, 'assets/images/Reset.png');    
+    this.load.image(ASSET_KEYS.CHEAT_OFF_STATE, 'assets/images/CheatOff.png');
+    this.load.image(ASSET_KEYS.CHEAT_ON_STATE, 'assets/images/CheatOn.png');
   }
 
   public create(): void {
